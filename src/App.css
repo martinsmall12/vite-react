@@ -1,42 +1,129 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+/* Global Styles */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
+  color: #333;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+h1 {
+  color: #2c3e50;
+  font-size: 2rem;
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+h2 {
+  color: #34495e;
+  font-size: 1.5rem;
+  margin-bottom: 10px;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+p {
+  font-size: 1rem;
+  color: #7f8c8d;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+/* Form Styles */
+form {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  width: 100%;
+  max-width: 400px;
 }
 
-.card {
-  padding: 2em;
+form h2 {
+  margin-top: 0;
 }
 
-.read-the-docs {
-  color: #888;
+input[type="text"],
+select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+button {
+  background-color: #3498db;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+  width: 100%;
+}
+
+button:hover {
+  background-color: #2980b9;
+}
+
+/* Available Rooms List */
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+ul li {
+  background-color: #ecf0f1;
+  padding: 10px;
+  border: 1px solid #bdc3c7;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+ul li:hover {
+  background-color: #bdc3c7;
+}
+
+/* Result Info */
+.result-info {
+  background-color: #2ecc71;
+  color: white;
+  padding: 10px;
+  margin-top: 20px;
+  border-radius: 4px;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.result-error {
+  background-color: #e74c3c;
+  color: white;
+  padding: 10px;
+  margin-top: 20px;
+  border-radius: 4px;
+  font-size: 1rem;
+  text-align: center;
+}
+
+/* Button to Show Available Rooms */
+#showRooms {
+  background-color: #2ecc71;
+  margin-top: 20px;
+}
+
+#showRooms:hover {
+  background-color: #27ae60;
+}
+
+.result-info {
+  background-color: #f39c12; /* Oranžová barva pro zrušení rezervace */
+  color: white;
+  padding: 10px;
+  margin-top: 20px;
+  border-radius: 4px;
+  font-size: 1rem;
+  text-align: center;
 }

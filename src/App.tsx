@@ -1,77 +1,155 @@
-import './App.css'
-import Book from "./classes/Book.ts";
-import Reader from "./classes/Reader.ts";
-import Librarian from "./classes/Librarian.ts";
-import Library from "./classes/Library.ts";
-import { useState} from "react";
+import React, { useState } from 'react';
+import { Hotel } from './hotel/Hotel';
+import { Room } from './hotel/Room';
+import { Suite } from './hotel/Suite';
+import { Guest } from './hotel/Guest';
 
-function App() {
+import './App.css';
 
-    // Vytvoření knih
-    const book1 = new Book("1984", "George Orwell");
-    const book2 = new Book("To Kill a Mockingbird", "Harper Lee");
+const hotel = new Hotel();
 
-// Vytvoření čtenáře a knihovníka
-    const reader = new Reader("Alice");
-    const librarian = new Librarian("Bob");
+const App: React.FC = () => {
+    // Stavy pro přidání pokoje
+    const [roomNumberAdd, setRoomNumberAdd] = useState('');
+    const [roomType, setRoomType] = useState('standard');
 
-// Vytvoření knihovny
-    const library = new Library();
-    library.addBook(book1);
-    library.addBook(book2);
+    // Stavy pro rezervaci pokoje
+    const [guestNameReserve, setGuestNameReserve] = useState('');
+    const [roomNumberReserve, setRoomNumberReserve] = useState('');
+    const [reservationInfo, setReservationInfo] = useState('');
 
-// Zobrazení dostupných knih
-    library.listAvailableBooks();
+    // Stavy pro zrušení rezervace
+    const [guestNameCancel, setGuestNameCancel] = useState('');
+    const [roomNumberCancel, setRoomNumberCancel] = useState('');
+    const [cancelInfo, setCancelInfo] = useState('');
 
-// Čtenář si půjčuje knihu
-    library.checkOutBook(reader, "1984");
+    // Stav pro dostupné pokoje
+    const [availableRooms, setAvailableRooms] = useState<Room[]>([]);
 
-// Pokus o opětovné půjčení téže knihy
-    library.checkOutBook(reader, "1984");
+    const handleAddRoom = (event: React.FormEvent) => {
+        event.preventDefault();
+        const roomNum = parseInt(roomNumberAdd, 10);
+        if (roomType === 'suite') {
+            hotel.addRoom(new Suite(roomNum, true));
+        } else {
+            hotel.addRoom(new Room(roomNum));
+        }
+        setRoomNumberAdd('');
+        alert(`Pokoj ${roomNum} přidán.`);
+    };
 
-// Zobrazení dostupných knih po půjčení
-    library.listAvailableBooks();
+    const handleReservation = (event: React.FormEvent) => {
+        event.preventDefault();
+        const roomNum = parseInt(roomNumberReserve, 10);
+        const guest = new Guest(guestNameReserve);
+        const reservation = hotel.createReservation(guest, roomNum);
+        if (reservation) {
+            setReservationInfo(reservation.getDetails());
+        } else {
+            setReservationInfo('Pokoj není dostupný nebo neexistuje.');
+        }
+        setGuestNameReserve('');
+        setRoomNumberReserve('');
+    };
 
-// Knihovník vrací knihu
-   librarian.returnBook(book1);
+    const handleCancelReservation = (event: React.FormEvent) => {
+        event.preventDefault();
+        const roomNum = parseInt(roomNumberCancel, 10);
+        const guest = new Guest(guestNameCancel);
+        hotel.cancelReservation(guest, roomNum);
+        setCancelInfo(`Rezervace pro ${guestNameCancel} na pokoj ${roomNum} byla zrušena.`);
+        setGuestNameCancel('');
+        setRoomNumberCancel('');
+    };
 
-// Zobrazení dostupných knih po vrácení
-
-
-    //const listAvailableBooks = library.listAvailableBooks();
-
-
-    const [title, setTitle] = useState('');
-    const [author, setAuthor] = useState('');
-    const [listAvailableBooks, setListAvailableBooks] = useState(library.listAvailableBooks());
+    const handleShowAvailableRooms = () => {
+        setAvailableRooms(hotel.listAvailableRooms());
+    };
 
     return (
-        <>
-            <div>
-                <div>
-                    <input name={'title'} value={title} onChange={(event) => setTitle(event.target.value) } />
-                    <input name={'author'} value={author} onChange={(event) => setAuthor(event.target.value)} />
-                    <button type={"button"} onClick={() => {
-                        const book = new Book(title, author);
-                        library.addBook(book);
-                        setTitle('');
-                        setAuthor('');
-                        setListAvailableBooks(library.listAvailableBooks());
-                    }}>Přidat knihu</button>
-                </div>
-                {listAvailableBooks.map((book) => (
-                    <div key={book.getTitle()}>
-                        <h2>{book.getTitle()}</h2><button type={"button"} onClick={() => {
-                            library.checkOutBook(reader, book.getTitle());
-                            setListAvailableBooks(library.listAvailableBooks());
-                        }}>Půjčit</button>
-                        <p>{book.getAuthor()}</p>
-                    </div>
-                ))}
-            </div>
+        <div>
+            <h1>Hotelový rezervační systém</h1>
 
-        </>
-    )
-}
+            {/* Přidání pokoje */}
+            <form onSubmit={handleAddRoom}>
+                <h2>Přidat pokoj</h2>
+                <input
+                    type="text"
+                    value={roomNumberAdd}
+                    onChange={(e) => setRoomNumberAdd(e.target.value)}
+                    placeholder="Číslo pokoje"
+                    required
+                />
+                <select
+                    value={roomType}
+                    onChange={(e) => setRoomType(e.target.value)}
+                >
+                    <option value="standard">Standardní pokoj</option>
+                    <option value="suite">Apartmá</option>
+                </select>
+                <button type="submit">Přidat pokoj</button>
+            </form>
 
-export default App
+            {/* Vytvoření rezervace */}
+            <form onSubmit={handleReservation}>
+                <h2>Rezervace pokoje</h2>
+                <input
+                    type="text"
+                    value={guestNameReserve}
+                    onChange={(e) => setGuestNameReserve(e.target.value)}
+                    placeholder="Jméno hosta"
+                    required
+                />
+                <input
+                    type="text"
+                    value={roomNumberReserve}
+                    onChange={(e) => setRoomNumberReserve(e.target.value)}
+                    placeholder="Číslo pokoje"
+                    required
+                />
+                <button type="submit">Rezervovat pokoj</button>
+            </form>
+
+            {/* Zobrazení výsledků rezervace */}
+            {reservationInfo && <p className="result-info">{reservationInfo}</p>}
+
+            {/* Zrušení rezervace */}
+            <form onSubmit={handleCancelReservation}>
+                <h2>Zrušení rezervace</h2>
+                <input
+                    type="text"
+                    value={guestNameCancel}
+                    onChange={(e) => setGuestNameCancel(e.target.value)}
+                    placeholder="Jméno hosta"
+                    required
+                />
+                <input
+                    type="text"
+                    value={roomNumberCancel}
+                    onChange={(e) => setRoomNumberCancel(e.target.value)}
+                    placeholder="Číslo pokoje"
+                    required
+                />
+                <button type="submit">Zrušit rezervaci</button>
+            </form>
+
+            {/* Zobrazení výsledků zrušení rezervace */}
+            {cancelInfo && <p className="result-info">{cancelInfo}</p>}
+
+            {/* Zobrazení dostupných pokojů */}
+            <h2>Dostupné pokoje</h2>
+            <button onClick={handleShowAvailableRooms} id="showRooms">Zobrazit dostupné pokoje</button>
+            {availableRooms.length > 0 ? (
+                <ul>
+                    {availableRooms.map((room, index) => (
+                        <li key={index}>Pokoj {room.getNumber()}</li>
+                    ))}
+                </ul>
+            ) : (
+                <p>Žádné dostupné pokoje.</p>
+            )}
+        </div>
+    );
+};
+
+export default App;
