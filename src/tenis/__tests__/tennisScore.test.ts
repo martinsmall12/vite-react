@@ -1,4 +1,4 @@
-import {getScore} from "../tennisScore";
+import {getScore} from "../tennisScoreRefactor.ts";
 
 
 describe('Tennis Game - getScore function', () => {
